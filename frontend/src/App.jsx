@@ -1,21 +1,26 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import Home from './pages/Home';
-import Auth from './pages/Auth';
+import Footer from './components/Footer'; 
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Home from './pages/Home'; 
 
 function App() {
   return (
     <Router>
-      <div className="app-wrapper">
+      <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Navbar />
-        <main className="main-content">
+        
+        <div style={{ flex: 1 }}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Auth defaultMode="login" />} />
-            <Route path="/signup" element={<Auth defaultMode="signup" />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
-        </main>
+        </div>
+        
         <Footer />
       </div>
     </Router>

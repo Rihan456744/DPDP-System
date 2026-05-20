@@ -69,3 +69,19 @@
 .form-submit-row { display: flex; justify-content: flex-end; margin-top: 10px; }
 .btn-dark-large { background: #0f3f4c; color: white; padding: 14px 40px; border-radius: 12px; border: none; font-weight: 600; font-size: 16px; cursor: pointer; transition: 0.2s; }
 .btn-dark-large:hover { background: #000; transform: translateY(-2px); }
+/* Update these sections in your existing Home.css to guarantee smooth slide-down actions */
+.accordion-body { 
+  padding: 0 24px; 
+  max-height: 0; 
+  overflow: hidden; 
+  transition: max-height 0.3s cubic-bezier(0, 1, 0, 1), padding 0.3s ease; 
+  color: var(--text-muted); 
+  font-size: 14.5px; 
+  line-height: 1.6;
+}
+
+.accordion-card.active .accordion-body { 
+  padding-bottom: 20px; 
+  max-height: 500px; /* Elevated bounds to allow comprehensive multi-line text boxes */
+  transition: max-height 0.3s cubic-bezier(0.9, 0, 0.1, 1), padding 0.3s ease;
+}

@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for routing
 import { Plus, X } from 'lucide-react';
+import Footer from '../components/Footer';
 import './Home.css';
 
 export default function Home() {
+  const navigate = useNavigate(); // Navigation initializer
   const [openHeroIdx, setOpenHeroIdx] = useState(0);
   const [openFaqIdx, setOpenFaqIdx] = useState(null);
 
@@ -22,10 +25,32 @@ export default function Home() {
     { title: "Continuous compliance with AI", text: "Our AI engine monitors your databases 24/7, flagging anomalous access patterns instantly." }
   ];
 
+  // Upgraded FAQs with mapped answers
   const faqs = [
-    "What compliance areas do you cover?", "How is data security ensured?",
-    "How does automation benefit my team?", "Can I integrate with existing tools?",
-    "Is the platform suitable for global use?", "What onboarding support is available?"
+    { 
+      q: "What compliance areas do you cover?", 
+      a: "We provide comprehensive, end-to-end support for major global and national frameworks including SOC 2 Type II, Digital Personal Data Protection (DPDP Act), ISO 27001, and customized local data audit schemas." 
+    },
+    { 
+      q: "How is data security ensured?", 
+      a: "AuditEase operates strictly via local runtime scanning and sandboxed metadata streams. Your raw customer databases and system logs are never transmitted outside your secure environment infrastructure." 
+    },
+    { 
+      q: "How does automation benefit my team?", 
+      a: "By completely dropping manual spreadsheets. Our platform auto-tokenizes raw backend log outputs, cross-checks infrastructure states, and generates fully exportable compliance reports with zero script preparation needed." 
+    },
+    { 
+      q: "Can I integrate with existing tools?", 
+      a: "Yes, our engine integrates seamlessly with typical cloud hosting layers, modern web frameworks, SQL instances, and relational storage architectures like Supabase to parse metadata directly." 
+    },
+    { 
+      q: "Is the platform suitable for global use?", 
+      a: "Absolutely. The rule matrix updates automatically to ensure compliance metrics cross-reference parameters defined by international validation standards as well as newly emerging privacy laws." 
+    },
+    { 
+      q: "What onboarding support is available?", 
+      a: "All tiers gain instant access to our interactive dashboard setup wizards. Enterprise subscriptions unlock specialized configuration assistance from data privacy engineers to align custom heuristic models." 
+    }
   ];
 
   const testimonials = [
@@ -41,7 +66,8 @@ export default function Home() {
         <div className="hero-content">
           <h1>Your Path To <br/><span className="text-green">Intelligent Audit & Compliance</span></h1>
           <p>Compliance isn't a checklist—it's a strategic asset. Manual, reactive audits create risk, slow growth, and drain resources. AuditEase redefines compliance.</p>
-          <button className="btn-primary">GET STARTED</button>
+          {/* Linked to go straight to dashboard page */}
+          <button className="btn-primary" onClick={() => navigate('/dashboard')}>GET STARTED</button>
         </div>
         
         <div className="hero-accordion">
@@ -51,7 +77,7 @@ export default function Home() {
                 {openHeroIdx === idx ? <X size={18} className="text-green" /> : <Plus size={18} className="text-green" />}
                 <span className="accordion-title">{feat.title}</span>
               </div>
-              <div className="accordion-body" style={{ maxHeight: openHeroIdx === idx ? '100px' : '0' }}>
+              <div className="accordion-body">
                 <p>{feat.text}</p>
               </div>
             </div>
@@ -98,8 +124,12 @@ export default function Home() {
             {faqs.map((faq, idx) => (
               <div key={idx} className={`accordion-card ${openFaqIdx === idx ? 'active' : ''}`} onClick={() => setOpenFaqIdx(openFaqIdx === idx ? null : idx)}>
                 <div className="accordion-header">
-                  {openFaqIdx === idx ? <X size={18} /> : <Plus size={18} />}
-                  <span className="accordion-title">{faq}</span>
+                  {openFaqIdx === idx ? <X size={18} className="text-green" /> : <Plus size={18} className="text-green" />}
+                  <span className="accordion-title">{faq.q}</span>
+                </div>
+                {/* Clean, collapsible container for FAQ descriptions */}
+                <div className="accordion-body">
+                  <p>{faq.a}</p>
                 </div>
               </div>
             ))}
@@ -107,7 +137,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Practical Reach Out Section at the Bottom */}
+      {/* Practical Reach Out Section */}
       <section className="reach-out-section container">
         <div className="form-header">
           <h2>Reach out</h2>
@@ -150,6 +180,8 @@ export default function Home() {
           </div>
         </form>
       </section>
+      
+    
     </div>
   );
 }
