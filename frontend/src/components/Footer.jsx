@@ -18,12 +18,10 @@ export default function Footer() {
             <h4>Product</h4>
             <Link to="/dashboard">Scanner</Link>
             <Link to="/login">Login</Link>
-            <Link to="/signup">Sign Up</Link>
           </div>
           <div className="footer-col">
             <h4>Resources</h4>
             <Link to="/">Documentation</Link>
-            <Link to="/">Blog</Link>
             <Link to="/">Compliance Guide</Link>
           </div>
           <div className="footer-col">
@@ -36,7 +34,9 @@ export default function Footer() {
       <div className="footer-bottom container">
         <p>&copy; {new Date().getFullYear()} AuditEase. All rights reserved.</p>
         <div className="social-links-text">
-    
+          <span>GitHub</span>
+          <span>Twitter</span>
+          <span>LinkedIn</span>
         </div>
       </div>
     </footer>

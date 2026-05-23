@@ -1,32 +1,35 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { ShieldAlert, Download, Activity, Lock, Server, AlertTriangle, Loader2, UploadCloud } from 'lucide-react';
+import { 
+  ShieldAlert, Download, Activity, Lock, AlertTriangle, 
+  Loader2, UploadCloud, FileText, CheckCircle2, ShieldCheck, 
+  FileKey, ChevronDown, FileJson 
+} from 'lucide-react';
 import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { Link } from 'react-router-dom'; // Changed from Navigate to Link
+import { Link } from 'react-router-dom';
 import './Dashboard.css';
 
 export default function Dashboard() {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [reportData, setReportData] = useState(null);
+  const [scanFramework, setScanFramework] = useState('both'); 
+  const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
 
-  // Strict UI Colors
-  const COLOR_CRITICAL = '#EF4444'; // Red
-  const COLOR_MEDIUM = '#F97316';   // Orange
-  const COLOR_LOW = '#55B385';      // Green
-  const ACTION_COLORS = ['#EF4444', '#F97316', '#F59E0B', '#3B82F6', '#10B981'];
+  const COLOR_CRITICAL = '#EF4444'; 
+  const COLOR_MEDIUM = '#F97316';   
+  const COLOR_LOW = '#4A90E2';      
+  const ACTION_COLORS = ['#EF4444', '#F97316', '#F59E0B', '#1E3A5F', '#4A90E2'];
 
-  // --- AUTHENTICATION CHECK ---
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
   
-  // --- LOCKED VIEW (For Logged-Out Users) ---
   if (!isAuthenticated) {
     return (
-      <div className="dashboard-wrapper container flex-center">
-        <div className="upload-box">
-          <Lock size={64} color="var(--brand-green)" style={{ marginBottom: '16px', display: 'inline-block' }} />
-          <h2>Dashboard Access Restricted</h2>
-          <p>Please log in or create an account to run the ML security scanner and view compliance analytics.</p>
+      <div className="dashboard-wrapper flex-center">
+        <div className="upload-box locked-box">
+          <div className="icon-wrapper"><Lock size={48} color="var(--accent-blue)" /></div>
+          <h2>Access Restricted</h2>
+          <p>Please log in with your administrative credentials to run the compliance scanner.</p>
           <Link to="/login" className="btn-dark-large w-full mt-4" style={{ textDecoration: 'none', display: 'flex', justifyContent: 'center' }}>
             Login to Continue
           </Link>
@@ -38,27 +41,20 @@ export default function Dashboard() {
   const handleFileUpload = async (e) => {
     e.preventDefault();
     if (!file) return;
-
     setLoading(true);
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("framework", scanFramework);
 
     try {
       const response = await axios.post('http://localhost:8000/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      
-      if (response.data.error) {
-        setReportData({ error: response.data.error });
-      } else {
-        setReportData(response.data);
-      }
+      if (response.data.error) setReportData({ error: response.data.error });
+      else setReportData({ ...response.data, scannedFramework: scanFramework });
     } catch (error) {
-      console.error("Upload process error:", error);
-      setReportData({ error: "Connection Refused: Verify your Python API backend is running on port 8000." });
-    } finally {
-      setLoading(false);
-    }
+      setReportData({ error: "Connection Refused: Verify your Python API backend is running." });
+    } finally { setLoading(false); }
   };
 
   const downloadJSONReport = () => {
@@ -66,30 +62,52 @@ export default function Dashboard() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(reportData, null, 2));
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", `Scan_Report_${reportData.filename || 'data'}.json`);
+    downloadAnchorNode.setAttribute("download", `Report_${reportData.filename || 'data'}.json`);
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
   };
 
-  // --- RENDERING CONFIGURATION BLOCKS ---
+  const downloadPDFReport = () => window.print();
+
+  // --- 1. SCANNING / UPLOAD UI ---
   if (!reportData && !loading) {
     return (
-      <div className="dashboard-wrapper container flex-center">
+      <div className="dashboard-wrapper flex-center">
         <div className="upload-box">
-          <UploadCloud size={64} color="var(--brand-green)" style={{ marginBottom: '16px', display: 'inline-block' }} />
-          <h2>Upload File for Compliance Scan</h2>
-          <p>We support raw <strong>.db</strong>, <strong>.json</strong>, <strong>.log</strong>, and <strong>.csv</strong> logs for DPDP / SOC2 processing.</p>
+          <div className="icon-wrapper"><UploadCloud size={40} color="var(--accent-blue)" /></div>
+          <h2>Compliance Scanner</h2>
+          <p>Initialize your Random Forest pipeline by selecting a target framework and uploading your logs.</p>
           
           <form onSubmit={handleFileUpload} className="upload-form">
-            <input 
-              type="file" 
-              accept=".db,.json,.log,.csv" 
-              onChange={(e) => setFile(e.target.files[0])} 
-              className="file-input"
-            />
+            <div className="form-section">
+              <h3>1. Select Target Framework</h3>
+              <div className="framework-grid">
+                <div className={`fw-card ${scanFramework === 'soc2' ? 'active' : ''}`} onClick={() => setScanFramework('soc2')}>
+                  {scanFramework === 'soc2' && <CheckCircle2 size={18} className="check-icon" />}
+                  <ShieldCheck size={28} className="fw-icon" />
+                  <span>SOC 2 Type II</span>
+                </div>
+                <div className={`fw-card ${scanFramework === 'dpdp' ? 'active' : ''}`} onClick={() => setScanFramework('dpdp')}>
+                  {scanFramework === 'dpdp' && <CheckCircle2 size={18} className="check-icon" />}
+                  <FileKey size={28} className="fw-icon" />
+                  <span>DPDP Act</span>
+                </div>
+                <div className={`fw-card ${scanFramework === 'both' ? 'active' : ''}`} onClick={() => setScanFramework('both')}>
+                  {scanFramework === 'both' && <CheckCircle2 size={18} className="check-icon" />}
+                  <Activity size={28} className="fw-icon" />
+                  <span>Comprehensive</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="form-section">
+              <h3>2. Upload Data Stream</h3>
+              <input type="file" accept=".db,.json,.log,.csv" onChange={(e) => setFile(e.target.files[0])} className="file-input" />
+            </div>
+
             <button type="submit" className="btn-dark-large w-full mt-4" disabled={!file}>
-              Run Security Scanner
+              Execute {scanFramework.toUpperCase()} Scan
             </button>
           </form>
         </div>
@@ -99,11 +117,11 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="dashboard-wrapper container flex-center">
-        <div className="loader-container" style={{ textAlign: 'center' }}>
-          <Loader2 size={48} color="#55B385" className="spin-anim" style={{ display: 'inline-block', marginBottom: '16px' }} />
+      <div className="dashboard-wrapper flex-center">
+        <div className="loader-container">
+          <Loader2 size={48} color="var(--accent-blue)" className="spin-anim" />
           <h2>Executing ML Pipeline Engine...</h2>
-          <p>Training Random Forest models, tokenizing inputs, and parsing schema trees.</p>
+          <p>Training Random Forest models against {scanFramework.toUpperCase()} controls.</p>
         </div>
       </div>
     );
@@ -111,9 +129,11 @@ export default function Dashboard() {
 
   if (reportData && reportData.error) {
     return (
-      <div className="dashboard-wrapper container flex-center">
+      <div className="dashboard-wrapper flex-center">
         <div className="upload-box" style={{ borderColor: COLOR_CRITICAL }}>
-          <AlertTriangle size={64} color={COLOR_CRITICAL} style={{ marginBottom: '16px', display: 'inline-block' }} />
+          <div className="icon-wrapper" style={{ background: '#FEF2F2', borderColor: '#FEE2E2' }}>
+            <AlertTriangle size={40} color={COLOR_CRITICAL} />
+          </div>
           <h2 style={{ color: COLOR_CRITICAL }}>Scan Aborted</h2>
           <p>{reportData.error}</p>
           <button className="btn-dark-large w-full mt-4" onClick={() => { setReportData(null); setFile(null); }}>
@@ -124,7 +144,7 @@ export default function Dashboard() {
     );
   }
 
-  // --- DATA TRANSFORMS ---
+  // --- DATA PROCESSING ---
   const anomalies = reportData.mlAnomalies || [];
   const violations = reportData.ruleViolations || [];
   const riskScore = reportData.overallRiskScore ?? 100;
@@ -150,72 +170,83 @@ export default function Dashboard() {
   anomalies.forEach(a => { if(a.action) actionCounts[a.action] = (actionCounts[a.action] || 0) + 1; });
   const actionData = Object.keys(actionCounts).map(key => ({ name: key, count: actionCounts[key] }));
 
+  // --- 2. MAIN DASHBOARD UI ---
   return (
     <div className="dashboard-wrapper container">
-      {/* Top Controls Header */}
+      
+      {/* Header Alignment */}
       <div className="dashboard-header">
         <div className="header-text">
-          <h1>Scan Targets: <span className="text-green">{reportData.filename}</span></h1>
-          <p>Unified Threat Vector Matrix & Framework Audits</p>
+          <h1>Scan Targets: <span className="text-accent">{reportData.filename}</span></h1>
+          <p>Threat Vector Matrix ({reportData.scannedFramework?.toUpperCase() || 'COMPREHENSIVE'})</p>
         </div>
         <div className="header-actions">
           <button className="btn-outline" onClick={() => { setReportData(null); setFile(null); }}>Eject File</button>
-          <button className="btn-download" onClick={downloadJSONReport}>
-            <Download size={18} /> Export JSON Matrix
-          </button>
+          
+          <div className="dropdown-container">
+            <button className="btn-download" onClick={() => setExportDropdownOpen(!exportDropdownOpen)}>
+              <div className="btn-inner"><Download size={18} /> Save As</div>
+              <ChevronDown size={16} style={{ transform: exportDropdownOpen ? 'rotate(180deg)' : 'rotate(0)' }} />
+            </button>
+            {exportDropdownOpen && (
+              <div className="dropdown-menu">
+                <button className="dropdown-item" onClick={() => { downloadPDFReport(); setExportDropdownOpen(false); }}>
+                  <FileText size={16} /> Export as PDF
+                </button>
+                <button className="dropdown-item" onClick={() => { downloadJSONReport(); setExportDropdownOpen(false); }}>
+                  <FileJson size={16} /> Export JSON Matrix
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Metrics Row */}
+      {/* Metrics Row Alignment */}
       <div className="metrics-grid">
         <div className="metric-card">
-          <div className="metric-icon green-icon"><ShieldAlert size={24} color="#55B385" /></div>
+          <div className="metric-icon blue-icon"><ShieldAlert size={24} color="var(--accent-blue)" /></div>
           <div className="metric-info">
             <h3>Compliance Integrity</h3>
-            <div className={`score-value ${riskScore > 75 ? 'text-green' : riskScore > 45 ? 'text-orange' : 'text-red'}`}>
+            <div className={`score-value ${riskScore > 75 ? 'text-accent' : riskScore > 45 ? 'text-orange' : 'text-red'}`}>
               {riskScore}<span>/100</span>
             </div>
-            <span className="subtitle">Random Forest Calculation</span>
           </div>
         </div>
-        
         <div className="metric-card">
-          <div className="metric-icon green-icon"><Activity size={24} color="#55B385" /></div>
+          <div className="metric-icon blue-icon"><Activity size={24} color="var(--accent-blue)" /></div>
           <div className="metric-info">
             <h3>Sectors Indexed</h3>
             <div className="score-value text-dark">{reportData.scannedLogs?.toLocaleString() || 0}</div>
-            <span className="subtitle">Parsed Row Vectors</span>
           </div>
         </div>
-
         <div className="metric-card">
           <div className="metric-icon red-icon"><AlertTriangle size={24} color={COLOR_CRITICAL} /></div>
           <div className="metric-info">
-            <h3>Identified Vectors</h3>
+            <h3>Active Vectors</h3>
             <div className="score-value text-red">{anomalies.length + violations.length}</div>
-            <span className="subtitle">Flagged Threat Profiles</span>
           </div>
         </div>
       </div>
 
-      {/* Primary Analytics Grid: Pixel Heights Assigned to Prevent Parent Sizing Collapse */}
+      {/* Primary Analytics Grid */}
       <div className="analytics-grid">
         <div className="chart-panel">
           <h3>Risk Profile Velocity</h3>
           <div className="chart-container">
-            <ResponsiveContainer width="100%" height={260}>
-              <AreaChart data={riskTrendData}>
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={riskTrendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="riskGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={COLOR_LOW} stopOpacity={0.25}/>
+                    <stop offset="5%" stopColor={COLOR_LOW} stopOpacity={0.3}/>
                     <stop offset="95%" stopColor={COLOR_LOW} stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-                <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: '#718096', fontSize: 11 }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#718096', fontSize: 11 }} domain={[0, 100]} />
-                <Tooltip contentStyle={{ backgroundColor: '#1A202C', color: '#fff', borderRadius: '6px', border: 'none' }} />
-                <Area type="monotone" dataKey="risk" stroke={COLOR_LOW} strokeWidth={2.5} fillOpacity={1} fill="url(#riskGrad)" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-light)" />
+                <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--text-muted)', fontSize: 12 }} domain={[0, 100]} />
+                <Tooltip contentStyle={{ backgroundColor: 'var(--primary-navy)', color: '#fff', border: 'none', borderRadius: '8px' }} />
+                <Area type="monotone" dataKey="risk" stroke={COLOR_LOW} strokeWidth={3} fillOpacity={1} fill="url(#riskGrad)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -224,19 +255,16 @@ export default function Dashboard() {
         <div className="chart-panel">
           <h3>Severity Aggregations</h3>
           <div className="chart-container">
-            <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={severityData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#718096', fontSize: 11 }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#718096', fontSize: 11 }} />
-                <Tooltip cursor={{ fill: '#F4F9F6' }} contentStyle={{ backgroundColor: '#1A202C', color: '#fff', borderRadius: '6px', border: 'none' }} />
-                <Bar dataKey="count" radius={[4, 4, 0, 0]}>
-                  {severityData.map((entry, idx) => {
-                    let c = COLOR_LOW;
-                    if (entry.name === 'Critical') c = COLOR_CRITICAL;
-                    if (entry.name === 'Medium') c = COLOR_MEDIUM;
-                    return <Cell key={`cell-${idx}`} fill={c} />;
-                  })}
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={severityData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-light)" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--text-muted)', fontSize: 12 }} />
+                <Tooltip cursor={{ fill: 'var(--bg-main)' }} contentStyle={{ backgroundColor: 'var(--primary-navy)', color: '#fff', border: 'none', borderRadius: '8px' }} />
+                <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={60}>
+                  {severityData.map((entry, idx) => (
+                    <Cell key={`cell-${idx}`} fill={entry.name === 'Critical' ? COLOR_CRITICAL : entry.name === 'Medium' ? COLOR_MEDIUM : COLOR_LOW} />
+                  ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -244,27 +272,24 @@ export default function Dashboard() {
         </div>
 
         <div className="chart-panel">
-          <h3>Incident Framework Allocation</h3>
+          <h3>Framework Allocation</h3>
           <div className="chart-container">
-            <ResponsiveContainer width="100%" height={260}>
-              <PieChart>
-                <Pie data={severityData} cx="50%" cy="40%" innerRadius={55} outerRadius={75} paddingAngle={4} dataKey="count" stroke="none">
-                  {severityData.map((entry, idx) => {
-                    let c = COLOR_LOW;
-                    if (entry.name === 'Critical') c = COLOR_CRITICAL;
-                    if (entry.name === 'Medium') c = COLOR_MEDIUM;
-                    return <Cell key={`cell-${idx}`} fill={c} />;
-                  })}
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                <Pie data={severityData} cx="50%" cy="45%" innerRadius={60} outerRadius={85} paddingAngle={4} dataKey="count" stroke="none">
+                  {severityData.map((entry, idx) => (
+                    <Cell key={`cell-${idx}`} fill={entry.name === 'Critical' ? COLOR_CRITICAL : entry.name === 'Medium' ? COLOR_MEDIUM : COLOR_LOW} />
+                  ))}
                 </Pie>
-                <Tooltip contentStyle={{ backgroundColor: '#1A202C', color: '#fff', borderRadius: '6px', border: 'none' }} />
-                <Legend verticalAlign="bottom" height={32} iconType="circle" wrapperStyle={{ fontSize: '11px', color: '#718096' }} />
+                <Tooltip contentStyle={{ backgroundColor: 'var(--primary-navy)', color: '#fff', border: 'none', borderRadius: '8px' }} />
+                <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ color: 'var(--text-muted)', fontSize: '12px' }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      {/* Secondary Custom Analytics Grid */}
+      {/* Secondary Analytics Grid */}
       <div className="secondary-charts-grid">
         <div className="chart-panel">
           <h3>Target Cluster Infiltration</h3>
@@ -272,13 +297,13 @@ export default function Dashboard() {
             {tableData.length === 0 ? (
               <div className="empty-chart-fallback">No cluster records encountered.</div>
             ) : (
-              <ResponsiveContainer width="100%" height={260}>
-                <BarChart data={tableData} layout="vertical" margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E2E8F0" />
-                  <XAxis type="number" axisLine={false} tickLine={false} tick={{ fill: '#718096', fontSize: 11 }} />
-                  <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#1A202C', fontSize: 11, fontWeight: 600 }} width={70} />
-                  <Tooltip cursor={{ fill: '#F4F9F6' }} contentStyle={{ backgroundColor: '#1A202C', color: '#fff', borderRadius: '6px', border: 'none' }} />
-                  <Bar dataKey="count" fill={COLOR_CRITICAL} radius={[0, 4, 4, 0]} barSize={18} />
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={tableData} layout="vertical" margin={{ top: 5, right: 30, left: 10, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--border-light)" />
+                  <XAxis type="number" axisLine={false} tickLine={false} tick={{ fill: 'var(--text-muted)' }} />
+                  <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--text-main)', fontWeight: 600 }} width={80} />
+                  <Tooltip cursor={{ fill: 'var(--bg-main)' }} contentStyle={{ backgroundColor: 'var(--primary-navy)', color: '#fff', border: 'none', borderRadius: '8px' }} />
+                  <Bar dataKey="count" fill={COLOR_CRITICAL} radius={[0, 4, 4, 0]} maxBarSize={30} />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -291,15 +316,15 @@ export default function Dashboard() {
             {actionData.length === 0 ? (
               <div className="empty-chart-fallback">No anomalous execution methods indexed.</div>
             ) : (
-              <ResponsiveContainer width="100%" height={260}>
-                <PieChart>
-                  <Pie data={actionData} cx="50%" cy="40%" innerRadius={0} outerRadius={75} dataKey="count" stroke="none" label={{ fontSize: 11, fontWeight: 600 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                  <Pie data={actionData} cx="50%" cy="45%" innerRadius={0} outerRadius={85} dataKey="count" stroke="none" label={{ fill: 'var(--primary-navy)', fontSize: 12, fontWeight: 700 }}>
                     {actionData.map((entry, idx) => (
                       <Cell key={`cell-${idx}`} fill={ACTION_COLORS[idx % ACTION_COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: '#1A202C', color: '#fff', borderRadius: '6px', border: 'none' }} />
-                  <Legend verticalAlign="bottom" height={32} iconType="circle" wrapperStyle={{ fontSize: '11px', color: '#718096' }} />
+                  <Tooltip contentStyle={{ backgroundColor: 'var(--primary-navy)', color: '#fff', border: 'none', borderRadius: '8px' }} />
+                  <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ color: 'var(--text-muted)', fontSize: '12px' }} />
                 </PieChart>
               </ResponsiveContainer>
             )}
@@ -308,7 +333,7 @@ export default function Dashboard() {
       </div>
 
       {/* Actionable Vectors Data Table */}
-      <div className="panel full-width-panel">
+      <div className="panel">
         <div className="panel-header">
           <h2><AlertTriangle size={18} color={COLOR_CRITICAL} /> Priority Findings & Remediation Protocols</h2>
         </div>
@@ -325,7 +350,7 @@ export default function Dashboard() {
             <tbody>
               {anomalies.length === 0 && violations.length === 0 && (
                 <tr>
-                  <td colSpan="4" style={{ textAlign: 'center', padding: '32px', color: 'var(--text-muted)' }}>
+                  <td colSpan="4" style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
                     All sectors cleared. Dataset fully matches compliance controls.
                   </td>
                 </tr>
@@ -334,7 +359,7 @@ export default function Dashboard() {
                 <tr key={`ml-${idx}`}>
                   <td className="font-bold">Anomalous Execution Check</td>
                   <td>Sector: <span style={{ textTransform: 'uppercase', fontWeight: 600 }}>{log.table || 'Unknown'}</span></td>
-                  <td>Heuristic event [{log.action || 'ACCESS'}] isolated across {log.rows?.toLocaleString() || 0} vectors. Result: {log.status || 'Verified'}.</td>
+                  <td>Event [{log.action}] isolated across {log.rows?.toLocaleString() || 0} vectors.</td>
                   <td><span className={`badge ${log.risk === 'CRITICAL' ? 'badge-red' : 'badge-orange'}`}>{log.risk}</span></td>
                 </tr>
               ))}
@@ -342,7 +367,7 @@ export default function Dashboard() {
                 <tr key={`rule-${idx}`}>
                   <td className="font-bold">System Configuration Gap</td>
                   <td>Global Architecture Core</td>
-                  <td>{rule.desc} Risk mapped explicitly to framework standard protocols.</td>
+                  <td>{rule.desc}</td>
                   <td><span className="badge badge-orange">MEDIUM</span></td>
                 </tr>
               ))}

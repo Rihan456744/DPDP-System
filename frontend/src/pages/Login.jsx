@@ -9,8 +9,6 @@ export default function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    
-    // Simulate API Login authentication
     if (email && password) {
       localStorage.setItem('isAuthenticated', 'true');
       navigate('/dashboard');
@@ -18,48 +16,97 @@ export default function Login() {
   };
 
   return (
-    <div className="flex-center" style={{ minHeight: '80vh', backgroundColor: '#F8FAFC' }}>
-      <div className="upload-box" style={{ maxWidth: '400px', padding: '40px' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
-          <ShieldCheck size={48} color="var(--brand-green)" />
+    <div style={{ 
+      minHeight: 'calc(100vh - 80px)', 
+      backgroundColor: 'var(--bg-main)', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      padding: '60px 20px' 
+    }}>
+      <div style={{
+        maxWidth: '540px', 
+        width: '100%', 
+        padding: '60px 48px',
+        background: 'var(--bg-card)', 
+        border: '1px solid var(--border-light)',
+        borderRadius: '24px', 
+        boxShadow: '0 20px 40px rgba(30, 58, 95, 0.06)',
+        display: 'flex', 
+        flexDirection: 'column', 
+        alignItems: 'center'
+      }}>
+        
+        {/* Header Icon */}
+        <div style={{ 
+          marginBottom: '24px', 
+          background: 'var(--bg-main)', 
+          padding: '20px', 
+          borderRadius: '50%',
+          border: '1px solid var(--border-light)'
+        }}>
+          <ShieldCheck size={48} color="var(--accent-blue)" />
         </div>
-        <h2 style={{ marginBottom: '8px' }}>Welcome Back</h2>
-        <p style={{ marginBottom: '24px', color: 'var(--text-muted)' }}>Secure access to AuditEase</p>
+        
+        <h2 style={{ color: 'var(--primary-navy)', fontSize: '32px', fontWeight: '800', marginBottom: '12px' }}>Welcome Back</h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: '16px', marginBottom: '40px', textAlign: 'center', lineHeight: '1.6' }}>
+          Enter your administrative credentials to access the AuditEase compliance dashboard.
+        </p>
 
-        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <form onSubmit={handleLogin} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          
           <div style={{ position: 'relative' }}>
-            <User size={18} color="#94A3B8" style={{ position: 'absolute', top: '14px', left: '14px' }} />
+            <User size={20} color="var(--text-muted)" style={{ position: 'absolute', top: '18px', left: '18px' }} />
             <input 
               type="email" 
               placeholder="Admin Email" 
-              value={email}
+              value={email} 
               onChange={(e) => setEmail(e.target.value)}
-              className="file-input" 
-              style={{ paddingLeft: '40px' }}
-              required 
-            />
-          </div>
-          
-          <div style={{ position: 'relative' }}>
-            <Lock size={18} color="#94A3B8" style={{ position: 'absolute', top: '14px', left: '14px' }} />
-            <input 
-              type="password" 
-              placeholder="Password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="file-input" 
-              style={{ paddingLeft: '40px' }}
+              style={{
+                width: '100%', height: '56px', paddingLeft: '52px', paddingRight: '16px',
+                background: 'var(--bg-main)', border: '2px solid transparent', borderRadius: '12px',
+                fontSize: '16px', color: 'var(--text-main)', outline: 'none', transition: '0.2s', fontFamily: 'inherit'
+              }}
+              onFocus={(e) => e.target.style.borderColor = 'var(--accent-blue)'}
+              onBlur={(e) => e.target.style.borderColor = 'transparent'}
               required 
             />
           </div>
 
-          <button type="submit" className="btn-dark-large w-full" style={{ marginTop: '8px' }}>
+          <div style={{ position: 'relative' }}>
+            <Lock size={20} color="var(--text-muted)" style={{ position: 'absolute', top: '18px', left: '18px' }} />
+            <input 
+              type="password" 
+              placeholder="Password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)}
+              style={{
+                width: '100%', height: '56px', paddingLeft: '52px', paddingRight: '16px',
+                background: 'var(--bg-main)', border: '2px solid transparent', borderRadius: '12px',
+                fontSize: '16px', color: 'var(--text-main)', outline: 'none', transition: '0.2s', fontFamily: 'inherit'
+              }}
+              onFocus={(e) => e.target.style.borderColor = 'var(--accent-blue)'}
+              onBlur={(e) => e.target.style.borderColor = 'transparent'}
+              required 
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            style={{
+              marginTop: '16px', width: '100%', height: '56px',
+              background: 'var(--primary-navy)', color: 'white', border: 'none', borderRadius: '12px',
+              fontSize: '18px', fontWeight: '700', cursor: 'pointer', transition: '0.2s'
+            }}
+            onMouseOver={(e) => { e.target.style.background = '#11223a'; e.target.style.transform = 'translateY(-2px)'; }}
+            onMouseOut={(e) => { e.target.style.background = 'var(--primary-navy)'; e.target.style.transform = 'translateY(0)'; }}
+          >
             Sign In
           </button>
         </form>
 
-        <div style={{ marginTop: '24px', fontSize: '14px', color: 'var(--text-muted)' }}>
-          Don't have an account? <Link to="/signup" style={{ color: 'var(--brand-green)', fontWeight: 600, textDecoration: 'none' }}>Sign Up</Link>
+        <div style={{ marginTop: '32px', fontSize: '15px', color: 'var(--text-muted)' }}>
+          Don't have an account? <Link to="/signup" style={{ color: 'var(--accent-blue)', fontWeight: 700, textDecoration: 'none' }}>Create Account</Link>
         </div>
       </div>
     </div>

@@ -6,12 +6,11 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Home from './pages/Home'; 
 
-function App() {
+export default function App() {
   return (
     <Router>
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Navbar />
-        
         <div style={{ flex: 1 }}>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -20,11 +19,8 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </div>
-        
         <Footer />
       </div>
     </Router>
   );
 }
-
-export default App;

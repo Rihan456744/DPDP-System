@@ -1,12 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
 :root {
-  --brand-green: #55B385;
-  --brand-green-hover: #459a70;
-  --brand-light: #F4F9F6; /* Soft green-gray background from your screenshots */
-  --brand-dark: #1A202C;
-  --text-muted: #718096;
-  --border-light: #E2E8F0;
+  /* Premium Palette */
+  --bg-main: #F5EFE6;       /* Beige/Cream */
+  --bg-card: #E8DDCF;       /* Light Beige */
+  --primary-navy: #1E3A5F;  /* Navy Blue */
+  --accent-blue: #4A90E2;   /* Sky Blue */
+  --text-main: #2C2C2C;     /* Dark Gray */
+  
+  /* System Mappings */
+  --brand-green: var(--accent-blue); 
+  --brand-dark: var(--primary-navy);
+  --text-muted: #5A6A7E;    
+  --border-light: #D5C8B5;  
 }
 
 * {
@@ -16,26 +20,29 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  color: var(--brand-dark);
-  line-height: 1.6;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  
+  /* MAIN BODY FONT: Nunito Sans (Extremely clean and readable for data) */
+  font-family: 'Nunito Sans', system-ui, -apple-system, sans-serif;
+  
   -webkit-font-smoothing: antialiased;
-  background-color: #ffffff;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-a { text-decoration: none; color: inherit; }
-li { list-style: none; }
+/* HEADER FONT: Exo 2 (Gives the dashboard a modern, tech-forward SaaS feel) */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Exo 2', system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* Ensure inputs and buttons match the body */
+input, button, select, textarea {
+  font-family: 'Nunito Sans', system-ui, sans-serif;
+}
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
 }
-
-.app-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-main { flex: 1; }
