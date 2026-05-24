@@ -70,7 +70,6 @@ export default function Dashboard() {
 
   const downloadPDFReport = () => window.print();
 
-  // --- 1. SCANNING / UPLOAD UI ---
   if (!reportData && !loading) {
     return (
       <div className="dashboard-wrapper flex-center">
@@ -144,7 +143,6 @@ export default function Dashboard() {
     );
   }
 
-  // --- DATA PROCESSING ---
   const anomalies = reportData.mlAnomalies || [];
   const violations = reportData.ruleViolations || [];
   const riskScore = reportData.overallRiskScore ?? 100;
@@ -170,11 +168,14 @@ export default function Dashboard() {
   anomalies.forEach(a => { if(a.action) actionCounts[a.action] = (actionCounts[a.action] || 0) + 1; });
   const actionData = Object.keys(actionCounts).map(key => ({ name: key, count: actionCounts[key] }));
 
-  // --- 2. MAIN DASHBOARD UI ---
   return (
     <div className="dashboard-wrapper container">
       
-      {/* Header Alignment */}
+      {/* --- UPDATED: IMAGE LOGO PDF HEADER --- */}
+      <div className="print-only print-header">
+        <img src="/dcs-logo.png" alt="DCS2 Logo" className="pdf-logo" />
+      </div>
+
       <div className="dashboard-header">
         <div className="header-text">
           <h1>Scan Targets: <span className="text-accent">{reportData.filename}</span></h1>
@@ -202,7 +203,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Metrics Row Alignment */}
       <div className="metrics-grid">
         <div className="metric-card">
           <div className="metric-icon blue-icon"><ShieldAlert size={24} color="var(--accent-blue)" /></div>
@@ -229,7 +229,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Primary Analytics Grid */}
       <div className="analytics-grid">
         <div className="chart-panel">
           <h3>Risk Profile Velocity</h3>
@@ -289,7 +288,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Secondary Analytics Grid */}
       <div className="secondary-charts-grid">
         <div className="chart-panel">
           <h3>Target Cluster Infiltration</h3>
@@ -332,7 +330,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Actionable Vectors Data Table */}
       <div className="panel">
         <div className="panel-header">
           <h2><AlertTriangle size={18} color={COLOR_CRITICAL} /> Priority Findings & Remediation Protocols</h2>
@@ -375,6 +372,12 @@ export default function Dashboard() {
           </table>
         </div>
       </div>
+
+      {/* --- PRINT ONLY PDF DISCLAIMER --- */}
+      <div className="print-only print-disclaimer">
+        <strong>Disclaimer:</strong> This data is for reference purpose only. It may make mistakes.
+      </div>
+      
     </div>
   );
 }

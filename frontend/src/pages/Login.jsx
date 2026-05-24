@@ -50,7 +50,7 @@ export default function Login() {
         
         <h2 style={{ color: 'var(--primary-navy)', fontSize: '32px', fontWeight: '800', marginBottom: '12px' }}>Welcome Back</h2>
         <p style={{ color: 'var(--text-muted)', fontSize: '16px', marginBottom: '40px', textAlign: 'center', lineHeight: '1.6' }}>
-          Enter your administrative credentials to access the AuditEase compliance dashboard.
+          Enter your credentials to access the Legisure compliance dashboard.
         </p>
 
         <form onSubmit={handleLogin} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '20px' }}>

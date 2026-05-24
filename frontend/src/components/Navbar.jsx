@@ -18,7 +18,7 @@ export default function Navbar() {
       <div className="navbar-container container">
         <Link to="/" className="logo">
           <ShieldCheck size={28} color="var(--brand-green)" />
-          <span style={{ color: 'var(--brand-dark)' }}>AuditEase</span>
+          <span style={{ color: 'var(--brand-dark)' }}>Legisure</span>
         </Link>
         <div className="nav-links">
           <Link to="/" className={`nav-item ${location.pathname === '/' ? 'active-link' : ''}`}>Home</Link>

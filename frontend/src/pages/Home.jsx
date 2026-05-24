@@ -33,7 +33,7 @@ export default function Home() {
     },
     { 
       q: "How is data security ensured?", 
-      a: "AuditEase operates strictly via local runtime scanning and sandboxed metadata streams. Your raw customer databases and system logs are never transmitted outside your secure environment infrastructure." 
+      a: "Legisure operates strictly via local runtime scanning and sandboxed metadata streams. Your raw customer databases and system logs are never transmitted outside your secure environment infrastructure." 
     },
     { 
       q: "How does automation benefit my team?", 
@@ -54,7 +54,7 @@ export default function Home() {
   ];
 
   const testimonials = [
-    { quote: "AuditEase reduced our compliance overhead by 80%. The real-time mapping to DPDP frameworks saved us months of manual auditing.", name: "Sarah Jenkins", role: "CTO, TechNova" },
+    { quote: "Legisure reduced our compliance overhead by 80%. The real-time mapping to DPDP frameworks saved us months of manual auditing.", name: "Sarah Jenkins", role: "CTO, TechNova" },
     { quote: "The automated evidence collection is a game-changer. Our SOC2 audit went flawlessly without interrupting our engineering team.", name: "Marcus Thorne", role: "VP Engineering, CloudSync" },
     { quote: "Absolutely seamless onboarding. The visual dashboard gives our executive team instant clarity on our security posture.", name: "Priya Patel", role: "InfoSec Lead, FinSecure" }
   ];
@@ -65,7 +65,7 @@ export default function Home() {
       <section className="hero-section container">
         <div className="hero-content">
           <h1>Your Path To <br/><span className="text-green">Intelligent Audit & Compliance</span></h1>
-          <p>Compliance isn't a checklist—it's a strategic asset. Manual, reactive audits create risk, slow growth, and drain resources. AuditEase redefines compliance.</p>
+          <p>Compliance isn't a checklist—it's a strategic asset. Manual, reactive audits create risk, slow growth, and drain resources. Legisure redefines compliance.</p>
           {/* Linked to go straight to dashboard page */}
           <button className="btn-primary" onClick={() => navigate('/dashboard')}>GET STARTED</button>
         </div>

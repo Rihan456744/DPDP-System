@@ -14,7 +14,7 @@ export default function Auth({ defaultMode }) {
     if (isLogin) {
       alert(`Logging in with ${formData.email}... Success!`);
     } else {
-      alert(`Account created for ${formData.name}! Welcome to AuditEase.`);
+      alert(`Account created for ${formData.name}! Welcome to Legisure.`);
     }
   };
 
@@ -75,7 +75,7 @@ export default function Auth({ defaultMode }) {
           <div className="brand-content">
             <ShieldCheck size={48} color="white" />
             <h3>Fly through audits.</h3>
-            <p>"The visual dashboard is outstanding. AuditEase eliminated our compliance headaches entirely."</p>
+            <p>"The visual dashboard is outstanding. Legisure eliminated our compliance headaches entirely."</p>
             <div className="brand-author">
               <strong>Marcus Thorne</strong>
               <span>VP Engineering, CloudSync</span>

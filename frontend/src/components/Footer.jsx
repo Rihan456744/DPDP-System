@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="footer-brand">
           <Link to="/" className="logo">
             <ShieldCheck size={28} color="var(--brand-green)" />
-            <span style={{ color: 'var(--brand-dark)' }}>AuditEase</span>
+            <span style={{ color: 'var(--brand-dark)' }}>Legisure</span>
           </Link>
           <p>Enterprise-grade DPDP & SOC2 compliance scanning powered by advanced ML algorithms.</p>
         </div>
@@ -32,7 +32,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="footer-bottom container">
-        <p>&copy; {new Date().getFullYear()} AuditEase. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} Legisure. All rights reserved.</p>
         <div className="social-links-text">
           <span>GitHub</span>
           <span>Twitter</span>

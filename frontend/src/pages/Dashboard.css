@@ -322,3 +322,165 @@
   body, .dashboard-wrapper { background: white !important; } 
   .chart-panel, .panel { box-shadow: none !important; border: 1px solid #ccc !important; break-inside: avoid; } 
 }
+
+/* =========================================
+   PRINT / PDF EXPORT STYLES
+========================================= */
+.print-only { 
+  display: none; 
+}
+
+@media print { 
+  .print-only { 
+    display: block; 
+  }
+  
+  .navbar, .footer, .header-actions { 
+    display: none !important; 
+  } 
+  
+  body, .dashboard-wrapper { 
+    background: white !important; 
+    padding: 0 !important;
+  } 
+
+  .chart-panel, .panel { 
+    box-shadow: none !important; 
+    border: 1px solid #ccc !important; 
+    break-inside: avoid; 
+  } 
+
+  /* Centered Logo Header for PDF */
+  .print-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--primary-navy);
+  }
+  .print-header h1 {
+    font-size: 32px;
+    color: var(--primary-navy) !important;
+    margin-top: 8px;
+    margin-bottom: 4px;
+  }
+  .print-header p {
+    font-size: 14px;
+    color: #666 !important;
+  }
+
+  /* Fixed Footer Disclaimer for PDF */
+  .print-disclaimer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 11px;
+    color: #888 !important;
+    padding: 12px 0;
+    background: white;
+    border-top: 1px solid #eee;
+  }
+}/* =========================================
+   PRINT / PDF EXPORT STYLES
+========================================= */
+.print-only { 
+  display: none; 
+}
+
+@media print { 
+  /* This specifically removes the default browser headers, date, and URL! */
+  @page {
+    margin: 0; 
+  }
+
+  /* Adds safe padding back so your content doesn't get cut off at the edges */
+  body {
+    padding: 1.5cm !important;
+  }
+  
+  .print-only { 
+    display: block; 
+  }
+  
+  .navbar, .footer, .header-actions { 
+    display: none !important; 
+  } 
+  
+  .dashboard-wrapper { 
+    background: white !important; 
+    padding: 0 !important;
+  } 
+
+  .chart-panel, .panel { 
+    box-shadow: none !important; 
+    border: 1px solid #ccc !important; 
+    break-inside: avoid; 
+  } 
+
+  /* Centered Logo Header for PDF */
+  .print-header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--primary-navy);
+  }
+  
+  /* =========================================
+   PRINT / PDF EXPORT STYLES
+========================================= */
+.print-only { 
+  display: none; 
+}
+
+@media print { 
+  @page { margin: 0; }
+  body { padding: 1.5cm !important; }
+  .print-only { display: block; }
+  .navbar, .footer, .header-actions { display: none !important; } 
+  .dashboard-wrapper { background: white !important; padding: 0 !important; } 
+  .chart-panel, .panel { box-shadow: none !important; border: 1px solid #ccc !important; break-inside: avoid; } 
+
+  /* Styles specifically for the new logo image */
+  .print-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--primary-navy);
+  }
+  
+  /* Updated: Larger Logo for PDF */
+  .pdf-logo {
+    max-height: 120px; /* Increased from 70px to make it much bigger */
+    object-fit: contain;
+    margin-bottom: 12px;
+  }
+
+  .print-disclaimer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 11px;
+    color: #888 !important;
+    padding: 12px 0;
+    background: white;
+    border-top: 1px solid #eee;
+  }
+}
+
+  /* Fixed Footer Disclaimer for PDF */
+  .print-disclaimer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 11px;
+    color: #888 !important;
+    padding: 12px 0;
+    background: white;
+    border-top: 1px solid #eee;
+  }
+}
